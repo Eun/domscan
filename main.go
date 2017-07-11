@@ -26,7 +26,7 @@ import (
 )
 
 const APPNAME = "domscan"
-const VERSION = "1.0.0"
+const VERSION = "1.0.1"
 
 var host string
 
@@ -226,13 +226,13 @@ func worker(ip string, orgDoc *goquery.Document, host string) {
 	eq, _ := checkHost(orgDoc, ip, host)
 	if eq == true {
 		logger.Printf("Found Host (%s) on '%s'", host, ip)
+		mutex.Lock()
+		found_addr = append(found_addr, ip)
+		mutex.Unlock()
 		if *stopOnFirst == true {
 			printResults()
 			os.Exit(1)
 		}
-		mutex.Lock()
-		found_addr = append(found_addr, ip)
-		mutex.Unlock()
 	}
 	mutex.Lock()
 	currentWorkers--
